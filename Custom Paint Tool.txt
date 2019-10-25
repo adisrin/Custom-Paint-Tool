@@ -1,0 +1,457 @@
+import java.awt.AWTException;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.util.Hashtable;
+import java.io.*;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+
+
+
+public class IndependentProjectTester extends JPanel {
+	
+	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	static JPanel test;
+	static Graphics2D g;
+	
+	static JButton red = new JButton("Red");
+    static JButton orange = new JButton("Orange");
+    static JButton yellow = new JButton("Yellow");
+    static JButton green = new JButton("Green");
+    static JButton blue = new JButton("Blue");
+    static JButton purple = new JButton("Purple");
+    static JButton black = new JButton("Black"); 
+    static JButton pink = new JButton("Pink"); 
+    static JButton brown = new JButton("Brown"); 
+    static JButton gray = new JButton("Gray");
+    
+    
+    static JTextField filename = new JTextField("Enter desired name");
+    static JButton saveButton = new JButton("SAVE as JPG");
+    
+    static JButton createNewCanvas = new JButton("Create BLANK Canvas");
+    
+    static JTextField openFileName = new JTextField("Enter filename of desired photo to be edited");
+    static JButton openFromFileButton = new JButton("OPEN FILE");
+    
+    static JFrame frame;
+    static JPanel panel;
+    static JPanel panel2;
+    
+    static JCheckBox rainbowMode = new JCheckBox("Rainbow Mode");
+    static boolean rainbowModeEnabled = false;
+    
+    static Hashtable<Integer,JLabel> labels = new Hashtable<Integer, JLabel>();
+    
+    static JSlider slider = new JSlider(JSlider.HORIZONTAL,0,100,20);
+    static int thickness = 20;
+    
+    
+    static JButton eraser = new JButton("Eraser");
+    
+    String color1 = "";
+	
+    static Point point1;
+
+    public IndependentProjectTester(String backgroundImage) {
+    	
+    	if(backgroundImage != null){
+    		setLayout(new BorderLayout());
+    		JLabel background = new JLabel(new ImageIcon(backgroundImage));
+    		add(background);
+    		background.setLayout(new FlowLayout());
+    	}
+    	
+    	
+    	createNewCanvas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == createNewCanvas){ 
+					Graphics h = getGraphics(); 
+					g = (Graphics2D) h; 
+					g.setColor(Color.WHITE);
+					g.setStroke(new BasicStroke(100000));
+					g.drawLine(0, 0, frame.getWidth(), frame.getHeight());
+					g.setStroke(new BasicStroke(thickness));
+    	    	} 
+				
+			}
+        });
+    	
+    	saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == saveButton){
+					if ((filename.getText().equalsIgnoreCase(""))){
+						filename.setText("Enter a valid name");
+					} else {
+						screenshot(filename.getText(), "jpg");
+					}
+					
+    	    	} 
+				
+			}
+        });
+    	
+    	openFromFileButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == openFromFileButton){
+					if ((openFileName.getText().equalsIgnoreCase(""))){
+						openFileName.setText("Enter a valid name");
+					//} else if (openFileName.getText().contains(".gif")){
+						//frame.dispose();
+						//IndependentProjectTester.CreateCanvas(screenSize.width, screenSize.height - 40, null);
+						//setBackground(Color.TRANSLUCENT);
+					} else {
+						frame.dispose();
+						IndependentProjectTester.CreateCanvas(screenSize.width, screenSize.height - 40, openFileName.getText());
+					}
+					
+    	    	} 
+				
+			}
+        });
+    	
+    	rainbowMode.addChangeListener(new ChangeListener(){
+    		public void stateChanged(ChangeEvent arg0){
+    			if (rainbowMode.isSelected()){
+    				rainbowModeEnabled = true;
+    			} else {
+    				rainbowModeEnabled = false;
+    			}
+    		}
+    	});
+        
+    	slider.addChangeListener(new ChangeListener(){
+			public void stateChanged(ChangeEvent arg0) {
+				thickness = slider.getValue();
+			}
+    	});
+    	
+        addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent event) {
+                point1 = new Point(event.getX(), event.getY());
+                slider.setBackground(getColor());
+            }
+        });
+        
+        red.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == red){
+    	    		color1 = "RED";
+    	    	} 
+				
+			}
+        });
+        
+        orange.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == orange){
+    	    		color1 = "ORANGE";
+    	    	} 
+				
+			}
+        });
+        
+        yellow.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == yellow){
+    	    		color1 = "YELLOW";
+    	    	} 
+				
+			}
+        });
+        
+        green.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == green){
+    	    		color1 = "GREEN";
+    	    	} 
+				
+			}
+        });
+        
+        blue.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == blue){
+    	    		color1 = "BLUE";
+    	    	} 
+				
+			}
+        });
+        
+        purple.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == purple){
+    	    		color1 = "PURPLE";
+    	    	} 
+				
+			}
+        });
+        
+        black.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == black){
+    	    		color1 = "BLACK";
+    	    	} 
+				
+			}
+        }); 
+        
+        pink.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == pink){
+    	    		color1 = "PINK";
+    	    	} 
+				
+			}
+        }); 
+        
+        brown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == brown){
+    	    		color1 = "BROWN";
+    	    	} 
+				
+			}
+        }); 
+        
+        gray.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == gray){
+    	    		color1 = "GRAY";
+    	    	} 
+				
+			}
+        }); 
+        
+        eraser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (arg0.getSource() == eraser){
+    	    		color1 = "ERASER";
+    	    	} 
+				
+			}
+        });
+        
+        addMouseMotionListener(new MouseMotionAdapter() {
+            public void mouseDragged(MouseEvent event) {
+                Graphics h = getGraphics();
+                g = (Graphics2D) h;
+                double colorS = Math.random();
+                
+                
+                boolean randCol = false;
+                
+                if (rainbowModeEnabled){
+                	randCol = true;
+                } 
+                
+           
+                if (randCol){
+                	 if (colorS > 0 && colorS < 0.1666){
+                		 g.setColor(Color.RED);
+                		 slider.setBackground(Color.RED);
+                	 } else if (colorS > 0.1666 && colorS < 0.3333){
+                		 g.setColor(Color.ORANGE);
+                		 slider.setBackground(Color.ORANGE);
+                	 } else if (colorS > 0.3333 && colorS < 0.5){
+                		 g.setColor(Color.YELLOW);
+                		 slider.setBackground(Color.YELLOW);
+                	 } else if (colorS > 0.5 && colorS < 0.6666){
+                		 g.setColor(Color.GREEN);
+                		 slider.setBackground(Color.GREEN);
+                	 } else if (colorS > 0.6666 && colorS < 0.8333){
+                		 g.setColor(Color.BLUE);
+                		 slider.setBackground(Color.BLUE);
+                	 } else if (colorS > 0.8333 && colorS < 1){
+                		 g.setColor(Color.MAGENTA);
+                		 slider.setBackground(Color.MAGENTA);
+                	 }	
+                	 
+                	 
+                } else {
+                	
+                	if (color1.equalsIgnoreCase("RED")){
+        	    		g.setColor(Color.RED);
+        	    	} else if (color1.equalsIgnoreCase("ORANGE")){
+        	    		g.setColor(Color.ORANGE);
+        	    	} else if (color1.equalsIgnoreCase("YELLOW")){
+        	    		g.setColor(Color.YELLOW);
+        	    	} else if (color1.equalsIgnoreCase("GREEN")){
+        	    		g.setColor(Color.GREEN);
+        	    	} else if (color1.equalsIgnoreCase("BLUE")){
+        	    		g.setColor(Color.BLUE);
+        	    	} else if (color1.equalsIgnoreCase("PURPLE")){
+        	    		g.setColor(Color.MAGENTA);
+        	    	} else if (color1.equalsIgnoreCase("BLACK")){
+        	    		g.setColor(Color.BLACK);
+        	    	} else if (color1.equalsIgnoreCase("PINK")){
+        	    		Color pinkie = new Color (254,128,185);
+        	    		g.setColor(pinkie);
+        	    	} else if (color1.equalsIgnoreCase("BROWN")){
+        	    		Color brownie = new Color(156, 93, 82);
+        	    		g.setColor(brownie);
+        	    	} else if (color1.equalsIgnoreCase("GRAY")){
+        	    		g.setColor(Color.GRAY);
+        	    	} else if (color1.equalsIgnoreCase("ERASER")){
+        	    		g.setColor(Color.WHITE);
+        	    	}
+                	
+                	
+                }
+                
+                g.setStroke(new BasicStroke(thickness));
+                
+                //g.draw3DRect(point1.x, point1.y, event.getX(), event.getY(), true);
+                
+                g.drawLine(point1.x, point1.y, event.getX(), event.getY());
+                
+                point1 = new Point(event.getX(), event.getY());
+                
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        CreateCanvas(screenSize.width,screenSize.height - 40,"newtutorialpage.jpg");
+    }
+    
+    public Color getColor(){
+    	if (color1.equalsIgnoreCase("RED")){
+    		return Color.RED;
+    	} else if (color1.equalsIgnoreCase("ORANGE")){
+    		return Color.ORANGE;
+    	} else if (color1.equalsIgnoreCase("YELLOW")){
+    		return Color.YELLOW;
+    	} else if (color1.equalsIgnoreCase("GREEN")){
+    		return Color.GREEN;
+    	} else if (color1.equalsIgnoreCase("BLUE")){
+    		return Color.BLUE;
+    	} else if (color1.equalsIgnoreCase("PURPLE")){
+    		return Color.MAGENTA;
+    	} else if (color1.equalsIgnoreCase("BLACK")){
+    		return Color.BLACK;
+    	} else if (color1.equalsIgnoreCase("PINK")){
+    		Color pinkie = new Color (254,128,185);
+    		return pinkie;
+    	} else if (color1.equalsIgnoreCase("BROWN")){
+    		Color brownie = new Color(156, 93, 82);
+    		return brownie;
+    	} else if (color1.equalsIgnoreCase("GRAY")){
+    		return Color.GRAY;
+    	} else if (color1.equalsIgnoreCase("ERASER")){
+    		return Color.WHITE;
+    	}
+    	
+		return null;
+    }
+    
+    public static void CreateCanvas(int x, int y, String backgroundFileName){
+    	frame = new JFrame("INDEPENDENT PROJECT: PAINT TOOL");
+        panel = new JPanel();
+        panel2 = new JPanel();
+        
+        
+        slider.setMajorTickSpacing(5);
+        slider.setPaintTicks(true);
+        
+        labels.put(new Integer(0), new JLabel("0"));
+        //labels.put(new Integer(10), new JLabel("10"));
+        labels.put(new Integer(20), new JLabel("20"));
+        //labels.put(new Integer(30), new JLabel("30"));
+        labels.put(new Integer(40), new JLabel("40"));
+        //labels.put(new Integer(50), new JLabel("50"));
+        labels.put(new Integer(60), new JLabel("60"));
+        //labels.put(new Integer(70), new JLabel("70"));
+        labels.put(new Integer(80), new JLabel("80"));
+        //labels.put(new Integer(90), new JLabel("90"));
+        labels.put(new Integer(100), new JLabel("100"));
+        slider.setLabelTable(labels);
+        
+        slider.setPaintLabels(true);
+        
+        red.setBackground(Color.RED);
+        orange.setBackground(Color.ORANGE);
+        yellow.setBackground(Color.YELLOW);
+        green.setBackground(Color.GREEN);
+        blue.setBackground(Color.BLUE);
+        purple.setBackground(Color.MAGENTA);
+        black.setBackground(Color.BLACK);
+        Color pinkie = new Color (254,128,185);
+        pink.setBackground(pinkie);
+        Color brownie = new Color(156, 93, 82);
+        brown.setBackground(brownie);
+        gray.setBackground(Color.GRAY);
+        eraser.setBackground(Color.WHITE);
+        
+        panel.add(red);
+        panel.add(orange);
+        panel.add(yellow);
+        panel.add(green);
+        panel.add(blue);
+        panel.add(purple);
+        panel.add(black);
+        panel.add(pink);
+        panel.add(brown);
+        panel.add(gray);
+        panel.add(eraser);
+        panel.add(slider);
+        panel.add(rainbowMode);
+        panel.add(filename);
+        panel.add(saveButton);
+        panel.add(createNewCanvas);
+        panel2.add(openFileName);
+        panel2.add(openFromFileButton);
+        
+        
+        frame.setResizable(false);
+        frame.getContentPane().add(panel, BorderLayout.SOUTH);
+        frame.getContentPane().add(panel2, BorderLayout.NORTH);
+        test = new IndependentProjectTester(backgroundFileName);
+        test.setBackground(Color.WHITE);
+        frame.getContentPane().add(test, BorderLayout.CENTER);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+       
+        
+        frame.setSize(x, y);
+
+        frame.setVisible(true);
+    }
+    
+    public void screenshot(String name, String format){
+    	try {
+            Robot robot = new Robot();
+            String type = format.substring(0);
+            String fileName = name + "." + type;
+            Rectangle screen = new Rectangle(0, 60, screenSize.width, screenSize.height - 150);
+            BufferedImage screenImage = robot.createScreenCapture(screen);
+            ImageIO.write(screenImage, type, new File(fileName));
+           
+        } catch (AWTException | IOException ex) {
+            System.out.println("There was an error in saving the image.");
+        }
+    }
